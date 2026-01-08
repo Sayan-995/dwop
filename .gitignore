@@ -1,0 +1,64 @@
+# Secrets / local config
+.env
+**/.env
+.env.*
+*.env
+!.env.example
+
+# Go build artifacts
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+*.a
+*.o
+
+# Common build/output dirs
+bin/
+dist/
+build/
+
+# Go tooling
+/go.work
+/go.work.sum
+
+# Logs
+*.log
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual environments
+.venv/
+venv/
+ui/venv/
+
+# Python packaging
+*.egg-info/
+dist/
+build/
+
+# Local archives / images
+*.tar
+
+# Temporary files
+tmp/
+**/tmp/
+*.tmp
