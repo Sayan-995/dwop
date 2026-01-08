@@ -107,19 +107,13 @@ Observer tracks processed terminal states in memory and deletes Jobs after final
 
 **Why:** Prevents reprocessing on watch event replay. Avoids "flapping" between terminal states during cleanup.
 
-### 7. Rich Failure Diagnostics
-
-On job failure, observer tails pod logs (last 100 lines) and persists alongside error metadata.
-
-**Why:** Transforms opaque "exit code 1" into actionable debugging information without manual `kubectl logs` spelunking.
-
-### 8. Channel Pool Failure Isolation
+### 7. Channel Pool Failure Isolation
 
 RabbitMQ publisher maintains channel pool. Channels that encounter errors are closed and discarded, never returned to pool.
 
 **Why:** Prevents poisoning connection pool with broken channels. Stabilizes publishing under transient broker issues.
 
-### 9. Zero-Credential Worker Design
+### 8. Zero-Credential Worker Design
 
 Workers operate entirely on time-limited signed URLs for:
 - Task code download
@@ -128,18 +122,6 @@ Workers operate entirely on time-limited signed URLs for:
 - Result upload
 
 **Why:** Eliminates credential management in pods. Reduces blast radius of container compromise.
-
-### 10. Deterministic Image Usage
-
-Job specs use `imagePullPolicy: Never` for local development clusters.
-
-**Why:** Ensures kind/minikube use locally-loaded images. Eliminates "stale image" debugging sessions.
-
-### 11. Graceful Shutdown
-
-Single-process architecture with shared cancellation context propagates shutdown signals to all subsystems (API server, claimer loops, observer, consumers).
-
-**Why:** Clean resource cleanup. Prevents orphaned goroutines and half-processed messages.
 
 ---
 
