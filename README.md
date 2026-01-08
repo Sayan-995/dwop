@@ -6,7 +6,36 @@ DWOP combines transactional outbox patterns, message queuing, and Kubernetes job
 
 ---
 
-## Architecture Overview
+## System Architecture
+```mermaid
+flowchart TD
+    Client[Client] -->|Upload DSL| API[HTTP API]
+    
+    API -->|Parse & Store| DB[(Supabase<br/>DB + Storage)]
+    API -->|Write Ready Tasks| Outbox[(Outbox Table)]
+    
+    Claimer[Claimer Loop] -->|Claim Events| Outbox
+    Claimer -->|Publish| RMQ[RabbitMQ]
+    
+    RMQ -->|Deliver| Consumer[Consumers]
+    Consumer -->|Create| Jobs[K8s Jobs]
+    
+    Jobs -->|Execute| Worker[Python Worker]
+    Worker <-->|Signed URLs| DB
+    
+    Observer -->|Success: Enqueue Next<br/>Failure: Retry| Outbox
+    Observer[Observer] -->|Watch| Jobs
+    
+    style API fill:#4A90E2
+    style Claimer fill:#4A90E2
+    style Consumer fill:#4A90E2
+    style Observer fill:#4A90E2
+    style RMQ fill:#F5A623
+    style Jobs fill:#BD10E0
+    style Worker fill:#BD10E0
+```
+
+## Overview
 
 **Core Components:**
 
