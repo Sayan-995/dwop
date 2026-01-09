@@ -1,6 +1,6 @@
 # DWOP — Distributed Workflow Orchestrator
 
-A production-grade workflow engine that transforms Python DSL into fault-tolerant, distributed execution pipelines on Kubernetes.
+A workflow engine that transforms Python DSL into fault-tolerant, distributed execution pipelines.
 
 DWOP combines transactional outbox patterns, message queuing, and Kubernetes job orchestration to deliver reliable, observable workflow execution with deterministic outputs and comprehensive failure handling.
 
@@ -161,10 +161,7 @@ Workers operate entirely on time-limited signed URLs for:
 - Go 1.21+
 - Kubernetes cluster (kind/minikube/GKE)
 - RabbitMQ instance
-- Supabase project with:
-  - `claim_outbox_events` RPC
-  - `increase_attempt` RPC
-  - `Task_Output` storage bucket
+- Supabase project
 
 ### Configuration
 
@@ -249,31 +246,5 @@ Check claimer logs for RPC errors:
 - Verify `claim_outbox_events` stored procedure exists
 - Ensure database user has EXECUTE permission
 - Confirm RabbitMQ connection is healthy (check consumer count)
-
----
-
-## Production Considerations
-
-**Security:**
-- Rotate Supabase service keys regularly
-- Use Kubernetes Secrets for `.env` values, never commit
-- Consider VPC-private RabbitMQ and Supabase endpoints
-- Implement network policies to isolate worker pods
-
-**Observability:**
-- Export metrics from orchestrator (queue depth, job latency, retry rates)
-- Forward RabbitMQ and Kubernetes events to centralized logging
-- Monitor storage bucket growth and implement retention policies
-
-**Scaling:**
-- Run multiple orchestrator replicas (claimer RPC provides natural work distribution)
-- Tune RabbitMQ prefetch count based on job execution time
-- Use Kubernetes resource requests/limits on worker Jobs
-- Consider sharding workflows by ID for very high throughput
-
-**Disaster Recovery:**
-- Database backups include workflow state and outbox (recovery point)
-- Reprocess stuck runs by inserting synthetic outbox events
-- Storage bucket versioning protects against accidental overwrites
 
 ---
